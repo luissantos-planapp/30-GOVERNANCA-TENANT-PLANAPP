@@ -1,0 +1,8 @@
+﻿"Grupo","Role","Mg","Estado"
+"SG-AZ-Cost-Reader","Cost Management Reader","mg-planapp","Atribuido"
+"SG-AZ-Sandbox-Owner","Owner","mg-planapp-sandbox","Atribuido"
+"SG-AZ-Sandbox-Contributor","Contributor","mg-planapp-sandbox","Atribuido"
+"SG-AZ-Sandbox-Reader","Reader","mg-planapp-sandbox","Atribuido"
+"SG-AZ-Nprd-Owner","Owner","mg-planapp-lz-nprd","Atribuido"
+"SG-AZ-Nprd-Contributor","Contributor","mg-planapp-lz-nprd","Atribuido"
+"SG-AZ-Nprd-Reader","Reader","mg-planapp-lz-nprd","Atribuido"

@@ -1,0 +1,15 @@
+﻿"Grupo","Role","Mg","Estado"
+"SG-AZ-Cost-Reader","Cost Management Reader","mg-planapp","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Sandbox-Owner","Owner","mg-planapp-sandbox","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Sandbox-Contributor","Contributor","mg-planapp-sandbox","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Sandbox-Reader","Reader","mg-planapp-sandbox","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Nprd-Owner","Owner","mg-planapp-lz-nprd","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Nprd-Contributor","Contributor","mg-planapp-lz-nprd","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."
+"SG-AZ-Nprd-Reader","Reader","mg-planapp-lz-nprd","Erro: Your Azure credentials have not been set up or have expired, please run Connect-AzAccount to set up your Azure credentials.
+Method not found: 'Void Azure.Identity.Broker.SharedTokenCacheCredentialBrokerOptions..ctor(Azure.Identity.TokenCachePersistenceOptions)'."

@@ -1,0 +1,70 @@
+=========================================================
+ PLANAPP - Inventario RBAC (Fase 1: Descoberta)
+ Tenant : cdb8a0e2-181d-4de3-896e-6e550ef1eaff
+ Data   : 2026-06-07 09:52
+=========================================================
+
+Total de atribuicoes unicas : 248
+  - Diretas                 : 56
+  - Herdadas                : 192
+
+Por NIVEL DE AMBITO:
+  Management Group   22
+  Recurso            126
+  Resource Group     59
+  Subscricao         39
+  Tenant Root        2
+
+Por PERFIL (principal):
+  Utilizador             142
+  Service Principal      78
+  Grupo                  28
+
+Por PAPEL (role):
+  Contributor                    73
+  Owner                          49
+  Foundry User                   16
+  Reader                         13
+  Storage Blob Data Contributor  11
+  Cost Management Reader         9
+  Azure AI Administrator         8
+  User Access Administrator      6
+  Key Vault Administrator        5
+  Azure AI Developer             5
+  Storage File Data Privileged Contributor 5
+  Storage Blob Data Reader       4
+  AcrPull                        4
+  Website Contributor            3
+  Cognitive Services OpenAI User 3
+  DNS Zone Contributor           2
+  Foundry Project Manager        2
+  Virtual Machine User Login     2
+  Storage File Data SMB Share Elevated Contributor 2
+  Azure AI Inference Deployment Operator 2
+  Key Vault Secrets Officer      2
+  Key Vault Secrets User         2
+  Managed Identity Contributor   2
+  Storage Account Contributor    2
+  SQL Security Manager           2
+  Virtual Machine Administrator Login 1
+  AcrPush                        1
+  Storage Table Data Contributor 1
+  AzureML Metrics Writer (preview) 1
+  Cost Management Contributor    1
+  Cognitive Services User        1
+  Custom Email Contributor Role - ptsustenta-fcfca31c83-acsendpoint 1
+  Key Vault Data Access Administrator 1
+  Key Vault Contributor          1
+  Custom Email Contributor Role - portalplan-1ada35a364-acsendpoint 1
+  Foundry Owner                  1
+  Data Factory Contributor       1
+  Role Based Access Control Administrator 1
+  Custom Email Contributor Role - stagingpor-fc84df7a80-acsendpoint 1
+
+ALERTA (anti-padrao): Owners atribuidos diretamente a utilizadores = 38
+  -> Candidatos a migracao para grupos 'az-pla-*-owner' (ver Fase 2/3).
+
+Ficheiros gerados:
+  CSV  : C:\Users\Luis.Santos\OneDrive - PLANAPP\Documents - SITDIA\10.PROJETOS\02-2026\30-GOVERNANCA TENANT PLANAPP\scripts\PLANAPP-RBAC-Inventario-20260607-094845.csv
+  JSON : C:\Users\Luis.Santos\OneDrive - PLANAPP\Documents - SITDIA\10.PROJETOS\02-2026\30-GOVERNANCA TENANT PLANAPP\scripts\PLANAPP-RBAC-Inventario-20260607-094845.json
+
