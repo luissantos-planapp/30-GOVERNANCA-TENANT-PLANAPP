@@ -1,0 +1,42 @@
+{
+  "properties": {
+    "displayName": "PLANAPP - Valores permitidos para a tag 'equipa'",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Garante que, quando presente, a tag 'equipa' usa apenas valores canonicos aprovados (lista controlada). Evita a fragmentacao da informacao por divergencia de valores (ex.: EMSITDIA vs GSI vs dsi). A obrigatoriedade de existencia da tag e assegurada pela politica '01-policy-require-tags'.",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0"
+    },
+    "parameters": {
+      "allowedEquipas": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Equipas permitidas",
+          "description": "Lista de valores canonicos aceites para a tag 'equipa'. Acrescentar as restantes equipas do PLANAPP a medida que forem confirmadas."
+        },
+        "defaultValue": ["EMSITDIA"]
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Efeito",
+          "description": "Audit para fase de observacao; Deny para imposicao."
+        },
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          { "field": "tags['equipa']", "exists": "true" },
+          { "field": "tags['equipa']", "notIn": "[parameters('allowedEquipas')]" }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

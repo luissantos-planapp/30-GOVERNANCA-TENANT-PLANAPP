@@ -9,12 +9,12 @@
     Projeto: 20260320-001 — Governança do Tenant PLANAPP
 .NOTES
     Autor  : Luís Santos / PLANAPP SITDIA
-    Data   : 2026-03-21
-    Versão : 1.0
+    Data   : 2026-06-05
+    Versão : 2.0 (prefixos e padrão de nomenclatura atualizados para política v2.0)
 #>
 
 param(
-    [string]$OutputPath = $PSScriptRoot
+    [string]$OutputPath = (Split-Path $PSScriptRoot -Parent)
 )
 
 Set-StrictMode -Version Latest
@@ -89,11 +89,13 @@ $mandatoryTags = @("departamento", "ambiente", "projeto", "centrocusto")
 # ─────────────────────────────────────────────
 # 1. Autenticação
 # ─────────────────────────────────────────────
+$planappTenantId = "cdb8a0e2-181d-4de3-896e-6e550ef1eaff"
+
 Write-Host "`n[1/4] A verificar autenticação..." -ForegroundColor Cyan
 $ctx = Get-AzContext
-if (-not $ctx) {
-    Write-Host "     Sem sessão ativa. A iniciar login..." -ForegroundColor Yellow
-    Connect-AzAccount -AccountId "luis.santos@planapp.gov.pt"
+if (-not $ctx -or $ctx.Tenant.Id -ne $planappTenantId) {
+    Write-Host "     A ligar ao tenant PLANAPP..." -ForegroundColor Yellow
+    Connect-AzAccount -TenantId $planappTenantId
     $ctx = Get-AzContext
 }
 Write-Host ("     Conta  : {0}" -f $ctx.Account.Id) -ForegroundColor Green
@@ -157,8 +159,15 @@ foreach ($r in $allResources) {
     $tagsObj   = $r.tags
 
     # ── Tags: verificar obrigatórias ──
-    $tagsJson     = if ($tagsObj) { ($tagsObj | ConvertTo-Json -Compress) } else { "{}" }
-    $tagKeys      = if ($tagsObj) { ($tagsObj.PSObject.Properties.Name | ForEach-Object { $_.ToLower() }) } else { @() }
+    $tagsJson = if ($tagsObj) { ($tagsObj | ConvertTo-Json -Compress -ErrorAction SilentlyContinue) ?? "{}" } else { "{}" }
+    $tagKeys  = if ($tagsObj) {
+                    try {
+                        @($tagsObj.PSObject.Properties |
+                          Where-Object { $_.MemberType -in 'NoteProperty','Property' } |
+                          Select-Object -ExpandProperty Name |
+                          ForEach-Object { $_.ToLower() })
+                    } catch { @() }
+                } else { @() }
     $tagsOk       = $true
     $tagsFaltando = @()
     foreach ($tag in $mandatoryTags) {
@@ -168,21 +177,30 @@ foreach ($r in $allResources) {
         }
     }
 
-    # ── Nomenclatura: verificar padrão pla- ──
+    # ── Nomenclatura: verificar padrão v2.0 ──
+    # Padrão: [prefix]-[workload]-[ambiente]-[regiao]-[instancia]
+    # Exceção Storage Account: sem hífens, começa por 'st'
     $namingOk     = $false
     $namingIssue  = ""
     if ($prefix) {
-        # Padrão: começa com pla- E contém o prefixo esperado
-        if ($r.name -match "^pla[-]" -and $r.name -match "[-]${prefix}\d{3}") {
+        if ($typeNorm -eq "microsoft.storage/storageaccounts") {
+            # Storage: stXXXXX (sem hífens, minúsculas, começa por 'st')
+            if ($r.name -match "^st[a-z0-9]{3,21}$") {
+                $namingOk = $true
+            } else {
+                $namingIssue = "Storage Account deve começar por 'st' sem hífens (máx 24 chars)"
+            }
+        } elseif ($r.name -match "^${prefix}-[a-z0-9]+-[a-z]+-[a-z]+-\d{3}$") {
+            # Padrão completo: prefix-workload-ambiente-regiao-NNN
             $namingOk = $true
-        } elseif ($r.name -match "^pla" -and $r.name -match $prefix) {
-            # Storage accounts (sem hífens): plawehubnetsecsa001
+        } elseif ($r.name -match "^${prefix}-") {
+            # Começa com o prefixo correto mas pode não ter todos os componentes
             $namingOk = $true
         } else {
-            $namingIssue = "Nome não segue padrão: esperado prefixo '$prefix' com convenção pla-*-$prefix+NNN"
+            $namingIssue = "Nome não segue padrão v2.0: esperado '${prefix}-[workload]-[ambiente]-[regiao]-NNN'"
         }
     } else {
-        $namingIssue = "Tipo de recurso sem prefixo mapeado na política"
+        $namingIssue = "Tipo de recurso sem prefixo mapeado na política v2.0"
     }
 
     # ── Row completo ──
@@ -240,10 +258,10 @@ $tagRows      | Export-Csv -Path $csvTags   -NoTypeInformation -Encoding UTF8
 Write-Host "`n[4/4] A calcular métricas de conformidade..." -ForegroundColor Cyan
 
 $totalRecursos    = $resourceRows.Count
-$namingOkCount    = ($resourceRows | Where-Object { $_.NamingOK }).Count
-$namingNokCount   = ($resourceRows | Where-Object { -not $_.NamingOK -and $_.PrefixEsperado }).Count
-$tagsOkCount      = ($resourceRows | Where-Object { $_.TagsOK }).Count
-$tagsNokCount     = ($resourceRows | Where-Object { -not $_.TagsOK }).Count
+$namingOkCount    = @($resourceRows | Where-Object { $_.NamingOK }).Count
+$namingNokCount   = @($resourceRows | Where-Object { -not $_.NamingOK -and $_.PrefixEsperado }).Count
+$tagsOkCount      = @($resourceRows | Where-Object { $_.TagsOK }).Count
+$tagsNokCount     = @($resourceRows | Where-Object { -not $_.TagsOK }).Count
 $namingPct        = if ($totalRecursos) { [math]::Round($namingOkCount / $totalRecursos * 100, 1) } else { 0 }
 $tagsPct          = if ($totalRecursos) { [math]::Round($tagsOkCount  / $totalRecursos * 100, 1) } else { 0 }
 
@@ -264,7 +282,7 @@ Write-Host " INVENTÁRIO COMPLETO — RESUMO" -ForegroundColor White
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor White
 Write-Host (" Total de recursos analisados : {0}" -f $totalRecursos)
 Write-Host ""
-Write-Host " Conformidade de Nomenclatura (política PLANAPP v1.1):"
+Write-Host " Conformidade de Nomenclatura (política PLANAPP v2.0):"
 Write-Host ("   Conforme    : {0,4}  ({1}%)" -f $namingOkCount,  $namingPct)  -ForegroundColor Green
 Write-Host ("   Não conforme: {0,4}  ({1}%)" -f $namingNokCount, (100 - $namingPct)) -ForegroundColor $(if ($namingNokCount -gt 0) {"Red"} else {"Green"})
 Write-Host ""

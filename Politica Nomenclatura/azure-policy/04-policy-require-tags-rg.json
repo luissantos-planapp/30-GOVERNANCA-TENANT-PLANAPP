@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "displayName": "PLANAPP - Exigir tags obrigatorias nos resource groups",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "Complementar a politica de recursos: exige as 4 tags obrigatorias (equipa, ambiente, projeto, centrocusto) tambem ao nivel do RESOURCE GROUP. Isto e essencial porque os resource groups sao a fonte da heranca de tags para os recursos. Mode 'All' e necessario para abranger resource groups (que nao sao cobertos por mode 'Indexed').",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Efeito",
+          "description": "Audit para fase de observacao; Deny para imposicao."
+        },
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          { "field": "type", "equals": "Microsoft.Resources/subscriptions/resourceGroups" },
+          {
+            "anyOf": [
+              { "field": "tags['equipa']", "exists": "false" },
+              { "field": "tags['ambiente']", "exists": "false" },
+              { "field": "tags['projeto']", "exists": "false" },
+              { "field": "tags['centrocusto']", "exists": "false" }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

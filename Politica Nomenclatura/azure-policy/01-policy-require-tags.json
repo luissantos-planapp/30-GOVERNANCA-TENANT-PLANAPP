@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "displayName": "PLANAPP - Exigir tags obrigatorias (equipa, ambiente, projeto, centrocusto)",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Nega (ou audita) a criacao ou atualizacao de recursos que nao tenham as quatro tags obrigatorias definidas na Politica de Nomenclaturas v2.0 do PLANAPP: equipa, ambiente, projeto e centrocusto. Mode 'Indexed' aplica-se a recursos que suportam tags e localizacao (nao abrange resource groups nem subscricoes — ver script de deployment para a politica equivalente a nivel de resource group).",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Efeito",
+          "description": "Audit para fase de observacao; Deny para imposicao."
+        },
+        "allowedValues": ["Audit", "Deny", "Disabled"],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "anyOf": [
+          { "field": "tags['equipa']", "exists": "false" },
+          { "field": "tags['ambiente']", "exists": "false" },
+          { "field": "tags['projeto']", "exists": "false" },
+          { "field": "tags['centrocusto']", "exists": "false" }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}
